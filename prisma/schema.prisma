@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum AccountType {
+  free
+  premium
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  type_account AccountType    @default(free)
+  expired_at   DateTime?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  notes Note[]
+  prompts Prompt[]
+}
+
+model Note {
+  id           Int       @id @default(autoincrement())
+  chat_id      String
+  content      String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  user_id      Int
+  user User @relation(fields: [user_id], references: [id])
+  @@index([user_id])
+}
+
+model Prompt {
+  id           Int       @id @default(autoincrement())
+  title        String
+  content      String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  user_id      Int
+  user User @relation(fields: [user_id], references: [id])
+  @@index([user_id])
+}
+
+
+

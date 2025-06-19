@@ -1,0 +1,1 @@
+export type AccountType = "free" | "premium";
